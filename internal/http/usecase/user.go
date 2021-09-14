@@ -42,19 +42,13 @@ func (p *User) Signup(c echo.Context) error {
 		return sendError(c, http.StatusBadRequest, "Invalid format")
 	}
 
-	if user.Name == "" || user.Password == "" {
-		return sendError(c, http.StatusBadRequest, "Invalid name or password")
-	}
-
-	u := new(repository.User)
-	if p.db.Where("name = ?", user.Name).First(&u); u.ID != "" {
-		return sendError(c, http.StatusConflict, "Name already exists")
-	}
-
-	p.db.Create(&repository.User{
+	tx := p.db.Create(&repository.User{
 		Name:     user.Name,
 		Password: user.Password,
 	})
+	if tx.Error != nil {
+		return sendError(c, http.StatusBadRequest, tx.Error.Error())
+	}
 	user.Password = ""
 
 	return c.JSON(http.StatusOK, user)
@@ -92,9 +86,9 @@ func (p *User) Login(c echo.Context) error {
 	})
 }
 
-func userIDFromToken(c echo.Context) string {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*jwtCustomClaims)
-	uid := claims.UID
-	return uid
-}
+//func userIDFromToken(c echo.Context) string {
+//	user := c.Get("user").(*jwt.Token)
+//	claims := user.Claims.(*jwtCustomClaims)
+//	uid := claims.UID
+//	return uid
+//}
