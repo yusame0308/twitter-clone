@@ -40,15 +40,4 @@ func Run() {
 	api.Use(middleware.JWTWithConfig(usecase.Config))
 	gen.RegisterHandlers(e, NewApi(db))
 	e.Logger.Fatal(e.Start(":1232"))
-
-	//e.POST("/signup", handler2.Signup)
-	//e.POST("/login", handler.Login)
-	//
-	//api := e.Group("/api")
-	//api.Use(middleware.JWTWithConfig(handler2.Config))
-	//api.GET("/health", func(c echo.Context) error {
-	//	return c.String(http.StatusOK, "Get Health")
-	//})
-	//
-	//return e
 }
