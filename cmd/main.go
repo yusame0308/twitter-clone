@@ -26,6 +26,8 @@ func main() {
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
+
+	// echo validator
 	e.Validator = &mv.Validator{Validator: validator.New()}
 
 	// openAPI validator
@@ -60,6 +62,10 @@ func main() {
 			return h(&mc.MyContext{
 				Context: c,
 				DB:      db,
+				Auth: &mc.Auth{
+					Name:     "name",
+					Password: "pass",
+				},
 			})
 		}
 	})

@@ -33,6 +33,7 @@ var Config = middleware.JWTConfig{
 }
 
 func (p *User) Signup(c *context.MyContext) error {
+	c.Logger().Print(c.Auth)
 	// リクエストを取得
 	user := new(gen.User)
 	if err := c.Bind(user); err != nil {
