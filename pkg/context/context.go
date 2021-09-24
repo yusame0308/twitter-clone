@@ -3,6 +3,8 @@ package context
 import (
 	"fmt"
 
+	"gorm.io/gorm"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -10,6 +12,7 @@ import (
 // echo.Contextをラップする構造体
 type MyContext struct {
 	echo.Context
+	DB *gorm.DB
 }
 
 // AuthBind

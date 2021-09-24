@@ -4,18 +4,13 @@ import (
 	"net/http"
 	"strings"
 	"twitter-clone/pkg/context"
-
-	"gorm.io/gorm"
 )
 
 type Tweet struct {
-	db *gorm.DB
 }
 
-func NewTweet(db *gorm.DB) *Tweet {
-	return &Tweet{
-		db: db,
-	}
+func NewTweet() *Tweet {
+	return &Tweet{}
 }
 
 func (p *Tweet) CreateTweet(c *context.MyContext) error {

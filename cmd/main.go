@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	repository2 "twitter-clone/infra/mysql/repository"
+	"twitter-clone/infra/mysql/repository"
 	api "twitter-clone/internal/http"
 	"twitter-clone/internal/http/gen"
 	mc "twitter-clone/pkg/context"
@@ -47,20 +47,23 @@ func main() {
 		panic(err.Error())
 	}
 	// Migrate the schema
-	if err := db.AutoMigrate(&repository2.User{}); err != nil {
+	if err := db.AutoMigrate(&repository.User{}); err != nil {
 		panic(err.Error())
 	}
-	if err := db.AutoMigrate(&repository2.Tweet{}); err != nil {
+	if err := db.AutoMigrate(&repository.Tweet{}); err != nil {
 		panic(err.Error())
 	}
 
 	// echo.Contextをラップするためにmiddlewareとして登録
 	e.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			return h(&mc.MyContext{Context: c})
+			return h(&mc.MyContext{
+				Context: c,
+				DB:      db,
+			})
 		}
 	})
 
-	gen.RegisterHandlers(e, api.NewApi(db))
+	gen.RegisterHandlers(e, api.NewApi())
 	e.Logger.Fatal(e.Start(":1232"))
 }

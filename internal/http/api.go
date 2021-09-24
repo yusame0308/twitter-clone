@@ -6,7 +6,6 @@ import (
 	"twitter-clone/pkg/context"
 
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 type Api struct {
@@ -18,8 +17,8 @@ func wrap(h func(c *context.MyContext) error, c echo.Context) error {
 	return h(c.(*context.MyContext))
 }
 
-func NewApi(db *gorm.DB) *Api {
-	return &Api{user: usecase.NewUser(db), tweet: usecase.NewTweet(db)}
+func NewApi() *Api {
+	return &Api{user: usecase.NewUser(), tweet: usecase.NewTweet()}
 }
 
 var _ gen.ServerInterface = (*Api)(nil)
