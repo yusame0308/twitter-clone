@@ -6,9 +6,10 @@ import (
 	"twitter-clone/internal/http/gen"
 	"twitter-clone/internal/repository"
 
+	"github.com/labstack/echo/v4/middleware"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 )
 
@@ -86,9 +87,9 @@ func (p *User) Login(c echo.Context) error {
 	})
 }
 
-//func userIDFromToken(c echo.Context) string {
-//	user := c.Get("user").(*jwt.Token)
-//	claims := user.Claims.(*jwtCustomClaims)
-//	uid := claims.UID
-//	return uid
-//}
+func userIDFromToken(c echo.Context) string {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*jwtCustomClaims)
+	uid := claims.UID
+	return uid
+}

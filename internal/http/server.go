@@ -1,9 +1,13 @@
 package api
 
 import (
+	"context"
+	"fmt"
 	"twitter-clone/internal/http/gen"
 	"twitter-clone/internal/http/usecase"
 	"twitter-clone/internal/repository"
+
+	"github.com/getkin/kin-openapi/openapi3filter"
 
 	om "github.com/deepmap/oapi-codegen/pkg/middleware"
 	"github.com/labstack/echo/v4"
@@ -24,7 +28,13 @@ func Run() {
 	if err != nil {
 		panic(err)
 	}
-	e.Use(om.OapiRequestValidator(spec))
+	validatorOptions := &om.Options{}
+	validatorOptions.Options.AuthenticationFunc = func(c context.Context, input *openapi3filter.AuthenticationInput) error {
+		fmt.Println(">>>> INSIDE AuthenticationFunc")
+		e.Use(middleware.JWTWithConfig(usecase.Config))
+		return nil
+	}
+	e.Use(om.OapiRequestValidatorWithOptions(spec, validatorOptions))
 
 	// mysql connection
 	dsn := "docker:docker@tcp(127.0.0.1:3306)/twitterCloneApi?charset=utf8mb4&parseTime=True&loc=Local"
@@ -36,8 +46,9 @@ func Run() {
 	if err := db.AutoMigrate(&repository.User{}); err != nil {
 		panic(err.Error())
 	}
-	api := e.Group("/api")
-	api.Use(middleware.JWTWithConfig(usecase.Config))
+	if err := db.AutoMigrate(&repository.Tweet{}); err != nil {
+		panic(err.Error())
+	}
 	gen.RegisterHandlers(e, NewApi(db))
 	e.Logger.Fatal(e.Start(":1232"))
 }
