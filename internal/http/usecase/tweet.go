@@ -3,8 +3,8 @@ package usecase
 import (
 	"net/http"
 	"strings"
+	"twitter-clone/pkg/context"
 
-	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +18,7 @@ func NewTweet(db *gorm.DB) *Tweet {
 	}
 }
 
-func (p *Tweet) CreateTweet(c echo.Context) error {
+func (p *Tweet) CreateTweet(c *context.MyContext) error {
 	//// リクエストを取得
 	//tweet := new(gen.Tweet)
 	//if err := c.Bind(tweet); err != nil {

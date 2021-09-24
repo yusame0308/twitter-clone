@@ -3,13 +3,13 @@ package usecase
 import (
 	"net/http"
 	"time"
+	"twitter-clone/infra/mysql/repository"
 	"twitter-clone/internal/http/gen"
-	"twitter-clone/internal/repository"
-
-	"github.com/labstack/echo/v4/middleware"
+	"twitter-clone/pkg/context"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 )
 
@@ -36,7 +36,7 @@ var Config = middleware.JWTConfig{
 	SigningKey: signingKey,
 }
 
-func (p *User) Signup(c echo.Context) error {
+func (p *User) Signup(c *context.MyContext) error {
 	// リクエストを取得
 	user := new(gen.User)
 	if err := c.Bind(user); err != nil {
@@ -55,7 +55,7 @@ func (p *User) Signup(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
-func (p *User) Login(c echo.Context) error {
+func (p *User) Login(c *context.MyContext) error {
 	// リクエストを取得
 	user := new(gen.User)
 	if err := c.Bind(user); err != nil {

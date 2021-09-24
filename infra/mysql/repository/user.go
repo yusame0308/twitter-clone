@@ -11,7 +11,7 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func (u *User) BeforeCreate(tx *gorm.DB) error {
+func (u *User) BeforeCreate(*gorm.DB) error {
 	newUUID := uuid.New()
 	u.ID = newUUID.String()
 	return nil
